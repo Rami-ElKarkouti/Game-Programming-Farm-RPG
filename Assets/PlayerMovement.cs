@@ -15,18 +15,40 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float paddingX = 0.3f;
     [SerializeField] private float paddingY = 0.3f;
 
+    [Header("Bridge 2 Blocker")]
+    [SerializeField] private Collider2D bridge2Collider;
+    [SerializeField] private Renderer bridge2Renderer;
+    [SerializeField] private float bridgeBlockPadding = 0.05f;
+
+    [SerializeField] private Collider2D playerCollider;
+
     private Rigidbody2D rb;
+    private Rigidbody rb3d;
     private Vector2 movement;
     private bool onLadder = false;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        rb3d = GetComponent<Rigidbody>();
 
-        rb.linearDamping = 0f;
-        rb.angularDamping = 0f;
-        rb.freezeRotation = true;
-        rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+        if (playerCollider == null)
+        {
+            playerCollider = GetComponent<Collider2D>();
+        }
+
+        CacheBridgeReference();
+
+        if (rb != null)
+        {
+            rb.linearDamping = 0f;
+            rb.angularDamping = 0f;
+            rb.freezeRotation = true;
+            rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+        }
+
+        EnsureNo2DGravity();
+        EnsureNo3DGravity();
     }
 
     private void Update()
@@ -38,12 +60,19 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector2 velocity;
+        EnsureNo2DGravity();
+        EnsureNo3DGravity();
+
+        if (rb == null)
+        {
+            return;
+        }
+
+        Vector2 velocity = Vector2.zero;
 
         if (movement == Vector2.zero)
         {
             rb.linearVelocity = Vector2.zero;
-            return;
         }
 
         if (onLadder)
@@ -53,16 +82,117 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            rb.gravityScale = 1f;
+            rb.gravityScale = 0f;
             velocity = movement * speed;
         }
 
         Vector2 nextPosition = rb.position + velocity * Time.fixedDeltaTime;
 
+        float minClampY = minY + paddingY;
+        float maxClampY = maxY - paddingY;
+        float bridgeLimitY = GetBridgeBlockerMaxY();
+
+        if (!float.IsNaN(bridgeLimitY))
+        {
+            maxClampY = Mathf.Min(maxClampY, bridgeLimitY);
+        }
+
+        if (maxClampY < minClampY)
+        {
+            maxClampY = minClampY;
+        }
+
         nextPosition.x = Mathf.Clamp(nextPosition.x, minX + paddingX, maxX - paddingX);
-        nextPosition.y = Mathf.Clamp(nextPosition.y, minY + paddingY, maxY - paddingY);
+        nextPosition.y = Mathf.Clamp(nextPosition.y, minClampY, maxClampY);
 
         rb.MovePosition(nextPosition);
+    }
+
+    private void EnsureNo2DGravity()
+    {
+        if (rb == null)
+        {
+            return;
+        }
+
+        if (rb.bodyType != RigidbodyType2D.Kinematic)
+        {
+            rb.bodyType = RigidbodyType2D.Kinematic;
+        }
+
+        if (rb.gravityScale != 0f)
+        {
+            rb.gravityScale = 0f;
+        }
+    }
+
+    private void EnsureNo3DGravity()
+    {
+        if (rb3d == null)
+        {
+            return;
+        }
+
+        if (rb3d.useGravity)
+        {
+            rb3d.useGravity = false;
+        }
+
+        if (!rb3d.isKinematic)
+        {
+            rb3d.isKinematic = true;
+        }
+
+        if (rb3d.constraints != RigidbodyConstraints.FreezeRotation)
+        {
+            rb3d.constraints = RigidbodyConstraints.FreezeRotation;
+        }
+    }
+
+    private void CacheBridgeReference()
+    {
+        if (bridge2Collider != null || bridge2Renderer != null)
+        {
+            return;
+        }
+
+        GameObject bridge = GameObject.Find("Bridge 2");
+        if (bridge == null)
+        {
+            return;
+        }
+
+        bridge2Collider = bridge.GetComponent<Collider2D>();
+        if (bridge2Collider == null)
+        {
+            bridge2Renderer = bridge.GetComponent<Renderer>();
+        }
+    }
+
+    private float GetBridgeBlockerMaxY()
+    {
+        if (bridge2Collider == null && bridge2Renderer == null)
+        {
+            CacheBridgeReference();
+        }
+
+        float playerHalfHeight = 0f;
+        if (playerCollider != null)
+        {
+            playerHalfHeight = playerCollider.bounds.extents.y;
+        }
+
+        if (bridge2Collider != null)
+        {
+            return bridge2Collider.bounds.min.y - playerHalfHeight - bridgeBlockPadding;
+        }
+
+        if (bridge2Renderer != null)
+        {
+            return bridge2Renderer.bounds.min.y - playerHalfHeight - bridgeBlockPadding;
+        }
+
+        return float.NaN;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
