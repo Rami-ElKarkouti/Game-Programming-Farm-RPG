@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class FarmManager : MonoBehaviour
+public class FarmManagerA : MonoBehaviour
 {
     [Header("Tilemaps")]
     [SerializeField] private Tilemap groundTilemap;

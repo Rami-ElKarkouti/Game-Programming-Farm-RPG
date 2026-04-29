@@ -4,7 +4,7 @@ public class PlayerToolActions : MonoBehaviour
 {
     [SerializeField] private PlayerToolManager playerToolManager;
     [SerializeField] private TileHighlightManager tileHighlightManager;
-    [SerializeField] private FarmManager farmManager;
+    [SerializeField] private FarmManagerA farmManager;
     [SerializeField] private GameObject cropPrefab;
 
     private void Update()
@@ -43,7 +43,7 @@ public class PlayerToolActions : MonoBehaviour
         Vector3 spawnPos = farmManager.GetCellCenterWorld(targetCell);
         GameObject cropObj = Instantiate(cropPrefab, spawnPos, Quaternion.identity);
 
-        Crop crop = cropObj.GetComponent<Crop>();
+        CropA crop = cropObj.GetComponent<CropA>();
         if (crop != null)
             crop.plantedCell = targetCell;
 
