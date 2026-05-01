@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Bridge 2 Blocker")]
     [SerializeField] private Collider2D bridge2Collider;
     [SerializeField] private Renderer bridge2Renderer;
+    [SerializeField] private Tilemap bridge2Tilemap;
     [SerializeField] private float bridgeBlockPadding = 0.05f;
 
     [SerializeField] private Collider2D playerCollider;
@@ -147,6 +149,11 @@ public class PlayerMovement : MonoBehaviour
             return false;
         }
 
+        if (IsOnBridge2Tile(toPosition))
+        {
+            return true;
+        }
+
         Vector2 delta = toPosition - fromPosition;
         float distance = delta.magnitude;
         if (distance <= Mathf.Epsilon)
@@ -173,11 +180,43 @@ public class PlayerMovement : MonoBehaviour
         return false;
     }
 
+    private bool IsOnBridge2Tile(Vector2 playerPosition)
+    {
+        if (bridge2Tilemap == null)
+        {
+            CacheBridgeReference();
+        }
+
+        if (bridge2Tilemap == null)
+        {
+            return false;
+        }
+
+        Vector2 halfExtents = Vector2.one * 0.1f;
+        if (playerCollider != null)
+        {
+            halfExtents = playerCollider.bounds.extents;
+        }
+
+        return HasBridgeTileAt(playerPosition)
+            || HasBridgeTileAt(playerPosition + new Vector2(halfExtents.x, halfExtents.y))
+            || HasBridgeTileAt(playerPosition + new Vector2(-halfExtents.x, halfExtents.y))
+            || HasBridgeTileAt(playerPosition + new Vector2(halfExtents.x, -halfExtents.y))
+            || HasBridgeTileAt(playerPosition + new Vector2(-halfExtents.x, -halfExtents.y));
+    }
+
+    private bool HasBridgeTileAt(Vector2 worldPosition)
+    {
+        Vector3Int cellPosition = bridge2Tilemap.WorldToCell(worldPosition);
+        return bridge2Tilemap.HasTile(cellPosition);
+    }
+
     private bool BlocksPlayerMovement(Collider2D hitCollider)
     {
         string objectName = hitCollider.gameObject.name;
         return objectName.Contains("Rock")
             || objectName.Contains("Water")
+            || objectName.Contains("Bridge2Blocker")
             || IsHouseBodyCollider(hitCollider);
     }
 
@@ -247,7 +286,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void CacheBridgeReference()
     {
-        if (bridge2Collider != null || bridge2Renderer != null)
+        if (bridge2Tilemap != null && (bridge2Collider != null || bridge2Renderer != null))
         {
             return;
         }
@@ -258,7 +297,16 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        bridge2Collider = bridge.GetComponent<Collider2D>();
+        if (bridge2Tilemap == null)
+        {
+            bridge2Tilemap = bridge.GetComponent<Tilemap>();
+        }
+
+        if (bridge2Collider == null)
+        {
+            bridge2Collider = bridge.GetComponent<Collider2D>();
+        }
+
         if (bridge2Collider == null)
         {
             bridge2Renderer = bridge.GetComponent<Renderer>();
