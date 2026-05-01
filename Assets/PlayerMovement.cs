@@ -4,6 +4,7 @@ public class PlayerMovement : MonoBehaviour
 {
     public float speed = 5f;
     public float climbSpeed = 3f;
+    private const float collisionSkin = 0.02f;
 
     [Header("Map Bounds")]
     [SerializeField] private float minX;
@@ -25,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Rigidbody rb3d;
     private Vector2 movement;
+    private readonly RaycastHit2D[] movementHits = new RaycastHit2D[16];
     private bool onLadder = false;
 
     private void Start()
@@ -86,7 +88,8 @@ public class PlayerMovement : MonoBehaviour
             velocity = movement * speed;
         }
 
-        Vector2 nextPosition = rb.position + velocity * Time.fixedDeltaTime;
+        Vector2 currentPosition = rb.position;
+        Vector2 nextPosition = currentPosition + velocity * Time.fixedDeltaTime;
 
         float minClampY = minY + paddingY;
         float maxClampY = maxY - paddingY;
@@ -102,10 +105,79 @@ public class PlayerMovement : MonoBehaviour
             maxClampY = minClampY;
         }
 
-        nextPosition.x = Mathf.Clamp(nextPosition.x, minX + paddingX, maxX - paddingX);
-        nextPosition.y = Mathf.Clamp(nextPosition.y, minClampY, maxClampY);
+        nextPosition = ClampToMapBounds(nextPosition, minClampY, maxClampY);
+        nextPosition = ResolveBlockedMovement(currentPosition, nextPosition, minClampY, maxClampY);
 
         rb.MovePosition(nextPosition);
+    }
+
+    private Vector2 ClampToMapBounds(Vector2 position, float minClampY, float maxClampY)
+    {
+        position.x = Mathf.Clamp(position.x, minX + paddingX, maxX - paddingX);
+        position.y = Mathf.Clamp(position.y, minClampY, maxClampY);
+        return position;
+    }
+
+    private Vector2 ResolveBlockedMovement(Vector2 currentPosition, Vector2 nextPosition, float minClampY, float maxClampY)
+    {
+        if (!IsBlocked(currentPosition, nextPosition))
+        {
+            return nextPosition;
+        }
+
+        Vector2 horizontalPosition = ClampToMapBounds(new Vector2(nextPosition.x, currentPosition.y), minClampY, maxClampY);
+        if (!IsBlocked(currentPosition, horizontalPosition))
+        {
+            return horizontalPosition;
+        }
+
+        Vector2 verticalPosition = ClampToMapBounds(new Vector2(currentPosition.x, nextPosition.y), minClampY, maxClampY);
+        if (!IsBlocked(currentPosition, verticalPosition))
+        {
+            return verticalPosition;
+        }
+
+        return currentPosition;
+    }
+
+    private bool IsBlocked(Vector2 fromPosition, Vector2 toPosition)
+    {
+        if (playerCollider == null)
+        {
+            return false;
+        }
+
+        Vector2 delta = toPosition - fromPosition;
+        float distance = delta.magnitude;
+        if (distance <= Mathf.Epsilon)
+        {
+            return false;
+        }
+
+        ContactFilter2D filter = new ContactFilter2D
+        {
+            useTriggers = false,
+            useLayerMask = false
+        };
+
+        int hitCount = playerCollider.Cast(delta.normalized, filter, movementHits, distance + collisionSkin);
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider2D hitCollider = movementHits[i].collider;
+            if (hitCollider != null && BlocksPlayerMovement(hitCollider))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool BlocksPlayerMovement(Collider2D hitCollider)
+    {
+        string objectName = hitCollider.gameObject.name;
+        return objectName.Contains("Rock")
+            || objectName.Contains("Water");
     }
 
     private void EnsureNo2DGravity()
@@ -204,4 +276,12 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Ladder"))
+        {
+            onLadder = false;
+            rb.linearVelocity = Vector2.zero;
+        }
+    }
 }
