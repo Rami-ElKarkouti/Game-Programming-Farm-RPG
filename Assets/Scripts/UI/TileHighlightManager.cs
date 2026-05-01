@@ -66,6 +66,6 @@ public class TileHighlightManager : MonoBehaviour
         previousCell = targetCell;
         hasPreviousCell = true;
 
-        Debug.Log($"Anchor world = {worldPos}, Player cell = {playerCell}, Target cell = {targetCell}");
+        //Debug.Log($"Anchor world = {worldPos}, Player cell = {playerCell}, Target cell = {targetCell}");
     }
 }

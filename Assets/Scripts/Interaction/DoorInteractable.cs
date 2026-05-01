@@ -44,7 +44,7 @@ public class DoorInteractable : Interactable
         {
             // Teleport the player to the destination
             currentPlayer.transform.position = teleportDestination.position;
-            Debug.Log($"Player teleported to {teleportDestination.name}");
+            // Debug.Log($"Player teleported to {teleportDestination.name}");
         }
     }
 
@@ -56,7 +56,7 @@ public class DoorInteractable : Interactable
             return;
         }
 
-        Debug.Log($"Loading scene: {targetSceneName}");
+        // Debug.Log($"Loading scene: {targetSceneName}");
         SceneManager.LoadScene(targetSceneName);
     }
 }
