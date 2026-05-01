@@ -33,7 +33,7 @@ public class CameraFollow : MonoBehaviour
     float minCamY = minY + halfHeight;
     float maxCamY = maxY - halfHeight;
 
-    //Debug.Log($"target={target.position} halfW={halfWidth} halfH={halfHeight} camX range=({minCamX},{maxCamX}) camY range=({minCamY},{maxCamY})");
+    // Debug.Log($"target={target.position} halfW={halfWidth} halfH={halfHeight} camX range=({minCamX},{maxCamX}) camY range=({minCamY},{maxCamY})");
 
     float clampedX = Mathf.Clamp(target.position.x, minCamX, maxCamX);
     float clampedY = Mathf.Clamp(target.position.y, minCamY, maxCamY);

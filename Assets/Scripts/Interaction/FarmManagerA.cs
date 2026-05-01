@@ -36,12 +36,21 @@ public class FarmManagerA : MonoBehaviour
 
     public void TillTile(Vector3Int cell)
     {
-        if (!IsFarmable(cell)) return;
+        // ❌ must exist in world
+        if (!groundTilemap.HasTile(cell))
+            return;
 
+        // ❌ prevent re-tilling same tile
+        if (IsTilled(cell))
+            return;
+
+        // init data
         if (!farmTiles.ContainsKey(cell))
             farmTiles[cell] = new FarmTileData();
 
         farmTiles[cell].isTilled = true;
+
+        // visual change
         soilTilemap.SetTile(cell, tillledSoilTile);
     }
 
