@@ -13,17 +13,17 @@ MonoBehaviour:
   m_Name: beetroot seed
   m_EditorClassIdentifier: 
   itemName: beetroot seed
-  icon: {fileID: 7929935949600721010, guid: 350e3bb77091342388110583f1a95805, type: 3}
+  icon: {fileID: 7929935949600721010, guid: eda1281b012c84337a16e31fba0e2e50, type: 3}
   itemType: 1
   stackable: 1
   maxStack: 99
   sellPrice: 0
   cropPrefab: {fileID: 5279752519008776326, guid: 5410eef56ac4b48f69a1db0442dbd5a6, type: 3}
   growthSprites:
-  - {fileID: 7929935949600721010, guid: 350e3bb77091342388110583f1a95805, type: 3}
-  - {fileID: 2901771626556814720, guid: 6245e339797294d2dba66229d31e1724, type: 3}
-  - {fileID: 6556523641891367704, guid: bd26094e05e0142f08bfad91475c010a, type: 3}
-  - {fileID: 30920674132646118, guid: 26c90948d834a48d2820d2e49cfa7c52, type: 3}
+  - {fileID: 7929935949600721010, guid: eda1281b012c84337a16e31fba0e2e50, type: 3}
+  - {fileID: 2901771626556814720, guid: 0018be08b3cb04c108c7392e85c17bf9, type: 3}
+  - {fileID: 6556523641891367704, guid: bae81af0e977d442382987647669dfd6, type: 3}
+  - {fileID: 30920674132646118, guid: 8d630a7bc8bd44bc7b248ae6ebf09a4c, type: 3}
   maxGrowthStage: 3
   timeBetweenGrowth: 5
   harvestItem: {fileID: 11400000, guid: 6bafe480484b0460a95eed956766f7cc, type: 2}

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Pickaxe
   m_EditorClassIdentifier: 
   itemName: Pickaxe
-  icon: {fileID: 8959118705387878318, guid: 2aa1e370e3ad343cd9ee082e8ef476f9, type: 3}
+  icon: {fileID: 8959118705387878318, guid: ec165be66a8204b289a8cc09a37151ba, type: 3}
   itemType: 0
   stackable: 0
   maxStack: 1

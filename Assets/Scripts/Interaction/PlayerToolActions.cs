@@ -2,54 +2,72 @@ using UnityEngine;
 
 public class PlayerToolActions : MonoBehaviour
 {
-    [SerializeField] private PlayerToolManager playerToolManager;
+    [SerializeField] private InventoryManagern inventory;
     [SerializeField] private TileHighlightManager tileHighlightManager;
     [SerializeField] private FarmManagerA farmManager;
     [SerializeField] private GameObject cropPrefab;
 
-    private void Update()
+    void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            UseEquippedTool();
+            UseItem();
         }
     }
 
-    private void UseEquippedTool()
+    void UseItem()
     {
+        ItemData item = inventory.GetSelectedItem(false);
+        if (item == null) return;
+
         Vector3Int targetCell = tileHighlightManager.GetTargetCell();
 
-        switch (playerToolManager.EquippedTool)
+        switch (item.itemType)
         {
-            case ToolType.Hoe:
-                farmManager.TillTile(targetCell);
+            case ItemType.Tool:
+                UseTool(item, targetCell);
                 break;
 
-            case ToolType.WateringCan:
-                farmManager.WaterTile(targetCell);
-                break;
-
-            case ToolType.Seeds:
-                PlantSeed(targetCell);
+            case ItemType.Seed:
+                PlantSeed(targetCell, item);
                 break;
         }
     }
 
-    private void PlantSeed(Vector3Int targetCell)
+    void UseTool(ItemData tool, Vector3Int cell)
     {
-        if (farmManager.HasCrop(targetCell))
-            return;
+        switch (tool.itemName)
+        {
+            case "Hoe":
+                farmManager.TillTile(cell);
+                break;
 
-        Vector3 spawnPos = farmManager.GetCellCenterWorld(targetCell);
-        GameObject cropObj = Instantiate(cropPrefab, spawnPos, Quaternion.identity);
+            case "Watering Can":
+                farmManager.WaterTile(cell);
+                break;
+
+            case "Sickle":
+                // later hook harvest system here
+                break;
+        }
+    }
+
+    void PlantSeed(Vector3Int cell, ItemData seed)
+    {
+        if (farmManager.HasCrop(cell)) return;
+
+        Vector3 pos = farmManager.GetCellCenterWorld(cell);
+        GameObject cropObj = Instantiate(cropPrefab, pos, Quaternion.identity);
 
         CropA crop = cropObj.GetComponent<CropA>();
         if (crop != null)
-            crop.plantedCell = targetCell;
+            crop.plantedCell = cell;
 
-        bool planted = farmManager.PlantCrop(targetCell, cropObj);
+        bool planted = farmManager.PlantCrop(cell, cropObj);
 
         if (!planted)
             Destroy(cropObj);
+        else
+            inventory.RemoveFromSelectedSlot(1);
     }
 }

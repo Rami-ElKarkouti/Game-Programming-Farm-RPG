@@ -13,17 +13,17 @@ MonoBehaviour:
   m_Name: cabbage seed
   m_EditorClassIdentifier: 
   itemName: Cabbage seed
-  icon: {fileID: 5731977589800508529, guid: 363e29e7321924c4d893a919c4f84bcb, type: 3}
+  icon: {fileID: 5731977589800508529, guid: df43ac697ccc0430080f51ed9b5ad9f0, type: 3}
   itemType: 1
   stackable: 1
   maxStack: 99
   sellPrice: 0
   cropPrefab: {fileID: 7726116866269449710, guid: 323199fcb4dcb497e8fa5d3ae276334d, type: 3}
   growthSprites:
-  - {fileID: 5731977589800508529, guid: 363e29e7321924c4d893a919c4f84bcb, type: 3}
-  - {fileID: 1774549293329851621, guid: 76565baf1a4eb467c9cfd4c312be4ed8, type: 3}
-  - {fileID: -2719203434195173934, guid: c0754ee7990054b32b86c55d140f6e07, type: 3}
-  - {fileID: 2985232015076406287, guid: 4d75aeef59b58497985c469ac932d613, type: 3}
+  - {fileID: 5731977589800508529, guid: df43ac697ccc0430080f51ed9b5ad9f0, type: 3}
+  - {fileID: 1774549293329851621, guid: 5ca5a61dd0e9d4cd0a87bce71f23109a, type: 3}
+  - {fileID: -2719203434195173934, guid: b5cc33486241f4be88fc2cb40b952db1, type: 3}
+  - {fileID: 2985232015076406287, guid: 758467595a76c4bcdad6bbc984ae44ea, type: 3}
   maxGrowthStage: 3
   timeBetweenGrowth: 5
   harvestItem: {fileID: 11400000, guid: 971ea653c63a54e86b4bfa7e5c8c4ccf, type: 2}

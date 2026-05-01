@@ -13,9 +13,16 @@ MonoBehaviour:
   m_Name: Beetroot
   m_EditorClassIdentifier: 
   itemName: Beetroot
-  icon: {fileID: 980901043704405067, guid: 9b8ae98a63a8e4a8282987bb3cbf9c2e, type: 3}
+  icon: {fileID: 980901043704405067, guid: 8ab11ae0bab2a40fa8cf502d7affc37d, type: 3}
   itemType: 2
   stackable: 1
   maxStack: 99
   sellPrice: 0
   cropPrefab: {fileID: 0}
+  growthSprites: []
+  maxGrowthStage: 3
+  timeBetweenGrowth: 5
+  harvestItem: {fileID: 0}
+  minYield: 1
+  maxYield: 1
+  staminaCost: 10

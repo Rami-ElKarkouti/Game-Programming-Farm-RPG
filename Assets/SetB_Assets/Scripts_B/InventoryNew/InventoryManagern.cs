@@ -14,6 +14,8 @@ public class InventoryManagern : MonoBehaviour
 
     int selectedSlot = -1;
 
+    public ItemData CurrentSelectedItem { get; private set; }
+
     void Start()
     {
         // PlayerPrefs.DeleteKey("Inventory"); resets inventory for testing 
@@ -55,6 +57,15 @@ public class InventoryManagern : MonoBehaviour
 
         inventorySlots[newValue].Select();
         selectedSlot = newValue;
+
+        UpdateSelectedItem();
+    }
+
+    private void UpdateSelectedItem()
+    {
+        InventoryItem item = inventorySlots[selectedSlot].GetComponentInChildren<InventoryItem>();
+
+        CurrentSelectedItem = (item != null && item.count > 0) ? item.itemData : null;
     }
 
     public bool AddItem(ItemData itemData)
@@ -71,6 +82,8 @@ public class InventoryManagern : MonoBehaviour
             {
                 itemInSlot.count++;
                 itemInSlot.RefreshCount();
+
+                UpdateSelectedItem(); 
                 return true;
             }
         }
@@ -81,6 +94,8 @@ public class InventoryManagern : MonoBehaviour
             if (inventorySlots[i].IsEmpty())
             {
                 SpawnNewItem(itemData, inventorySlots[i]);
+
+                UpdateSelectedItem(); 
                 return true;
             }
         }
@@ -110,7 +125,11 @@ public class InventoryManagern : MonoBehaviour
                 item.count--;
 
                 if (item.count <= 0)
+                {
                     Destroy(item.gameObject);
+                    UpdateSelectedItem();
+                }
+                    
                 else
                     item.RefreshCount();
             }
@@ -132,9 +151,16 @@ public class InventoryManagern : MonoBehaviour
         item.count -= amount;
 
         if (item.count <= 0)
+        {
             Destroy(item.gameObject);
+            UpdateSelectedItem();
+        }
         else
+        {
             item.RefreshCount();
+        }
+
+        UpdateSelectedItem(); 
     }
 
     public bool HasItem(ItemData itemData)
@@ -243,5 +269,7 @@ public class InventoryManagern : MonoBehaviour
         {
             item.RefreshCount();
         }
+
+        UpdateSelectedItem();
     }
 }

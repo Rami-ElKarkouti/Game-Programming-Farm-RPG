@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Sickle
   m_EditorClassIdentifier: 
   itemName: Sickle
-  icon: {fileID: 4301844918096825189, guid: 2426c58ff07a44d819d5c5bac12e6ad2, type: 3}
+  icon: {fileID: 4301844918096825189, guid: 14f38c0651a744e3f9acb65656511da0, type: 3}
   itemType: 0
   stackable: 0
   maxStack: 1

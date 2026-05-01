@@ -13,9 +13,16 @@ MonoBehaviour:
   m_Name: Cabbage
   m_EditorClassIdentifier: 
   itemName: Cabbage
-  icon: {fileID: -2785533952315014158, guid: c1721014f84d347e39e1b74c8d9b2085, type: 3}
+  icon: {fileID: -2785533952315014158, guid: 2f74167cdb37d49d594dc42a379c9c6a, type: 3}
   itemType: 2
   stackable: 1
   maxStack: 99
   sellPrice: 0
   cropPrefab: {fileID: 0}
+  growthSprites: []
+  maxGrowthStage: 3
+  timeBetweenGrowth: 5
+  harvestItem: {fileID: 0}
+  minYield: 1
+  maxYield: 1
+  staminaCost: 10

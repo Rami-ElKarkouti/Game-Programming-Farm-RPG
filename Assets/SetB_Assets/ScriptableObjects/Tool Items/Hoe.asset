@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Hoe
   m_EditorClassIdentifier: 
   itemName: Hoe
-  icon: {fileID: -3766519690804746565, guid: 537518828a9f14114845e8d666f5b529, type: 3}
+  icon: {fileID: -3766519690804746565, guid: ed9e4dc8945c042f3828f72de7aa729f, type: 3}
   itemType: 0
   stackable: 0
   maxStack: 1
