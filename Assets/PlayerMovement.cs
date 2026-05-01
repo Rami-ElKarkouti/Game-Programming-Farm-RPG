@@ -177,7 +177,31 @@ public class PlayerMovement : MonoBehaviour
     {
         string objectName = hitCollider.gameObject.name;
         return objectName.Contains("Rock")
-            || objectName.Contains("Water");
+            || objectName.Contains("Water")
+            || IsHouseBodyCollider(hitCollider);
+    }
+
+    private bool IsHouseBodyCollider(Collider2D hitCollider)
+    {
+        Transform hitTransform = hitCollider.transform;
+        string objectName = hitTransform.name;
+
+        if (objectName.Contains("Door") || objectName.Contains("InteriorTrigger"))
+        {
+            return false;
+        }
+
+        while (hitTransform != null)
+        {
+            if (hitTransform.name.Contains("House"))
+            {
+                return true;
+            }
+
+            hitTransform = hitTransform.parent;
+        }
+
+        return false;
     }
 
     private void EnsureNo2DGravity()
