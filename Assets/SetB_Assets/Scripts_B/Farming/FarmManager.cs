@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+// OLD SCRIPT NOT USED ANYMORE - SEE FarmManagerA.cs for new version with tilemap-based logic and better structure
 public class FarmManager : MonoBehaviour
 {
     [Header("Inventory & Seed Selection")]

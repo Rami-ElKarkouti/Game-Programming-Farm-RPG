@@ -116,7 +116,15 @@ public class PlayerFarmInteract : MonoBehaviour
         }
 
         Vector3 pos = farmManager.GetCellCenterWorld(cell);
+        pos.z = 0f;
         GameObject cropObj = Instantiate(seed.cropPrefab, pos, Quaternion.identity);
+
+        // ✅ THIS IS THE FIX
+        Crop crop = cropObj.GetComponent<Crop>();
+        if (crop != null)
+        {
+            crop.cropData = seed;
+        }
 
         bool planted = farmManager.PlantCrop(cell, cropObj);
 

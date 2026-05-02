@@ -60,6 +60,16 @@ public class FarmManagerA : MonoBehaviour
 
         farmTiles[cell].isWatered = true;
         soilTilemap.SetTile(cell, wateredSoilTile);
+
+        // ✅ NEW: water crop
+        if (farmTiles[cell].crop != null)
+        {
+            Crop crop = farmTiles[cell].crop.GetComponent<Crop>();
+            if (crop != null)
+            {
+                crop.Water();
+            }
+        }
     }
 
     public bool PlantCrop(Vector3Int cell, GameObject cropObject)
