@@ -18,7 +18,7 @@ public class InventoryManagern : MonoBehaviour
 
     void Start()
     {
-        // PlayerPrefs.DeleteKey("Inventory"); resets inventory for testing 
+        PlayerPrefs.DeleteKey("Inventory"); 
 
         if (PlayerPrefs.HasKey("Inventory"))
         {

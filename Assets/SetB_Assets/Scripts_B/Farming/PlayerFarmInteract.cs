@@ -8,10 +8,13 @@ public class PlayerFarmInteract : MonoBehaviour
     [SerializeField] private TileHighlightManager highlight;
     [SerializeField] private FarmManagerA farmManager;
 
-
     [Header("Valid Soil Ground")]
     [SerializeField] private Tilemap groundTilemap;
     [SerializeField] private TileBase[] validSoilTiles;
+
+    [Header("Resource Nodes")]
+    [SerializeField] private LayerMask resourceLayer;
+    [SerializeField] private float resourceHitRadius = 0.35f;
 
     void Update()
     {
@@ -53,8 +56,8 @@ public class PlayerFarmInteract : MonoBehaviour
         }
     }
 
-    // ✅ TILE-BASED TOOL USE
-    void UseTool(ItemData item, Vector3Int cell){
+    void UseTool(ItemData item, Vector3Int cell)
+    {
         switch (item.itemName)
         {
             case "Hoe":
@@ -74,33 +77,39 @@ public class PlayerFarmInteract : MonoBehaviour
             case "Sickle":
                 Harvest(cell);
                 break;
+
+            case "Axe":
+                UseResourceTool(item, cell);
+                break;
+
+            case "Pickaxe":
+                UseResourceTool(item, cell);
+                break;
         }
     }
 
-
     bool IsValidSoilGround(Vector3Int cell)
+    {
+        if (groundTilemap == null)
         {
-            if (groundTilemap == null)
-            {
-                Debug.LogError("Ground Tilemap is missing!");
-                return false;
-            }
-
-            TileBase tileAtCell = groundTilemap.GetTile(cell);
-
-            if (tileAtCell == null)
-                return false;
-
-            foreach (TileBase validTile in validSoilTiles)
-            {
-                if (tileAtCell == validTile)
-                    return true;
-            }
-
+            Debug.LogError("Ground Tilemap is missing!");
             return false;
         }
 
-    // ✅ TILE-BASED PLANTING
+        TileBase tileAtCell = groundTilemap.GetTile(cell);
+
+        if (tileAtCell == null)
+            return false;
+
+        foreach (TileBase validTile in validSoilTiles)
+        {
+            if (tileAtCell == validTile)
+                return true;
+        }
+
+        return false;
+    }
+
     void PlantSeed(ItemData seed, Vector3Int cell)
     {
         if (!farmManager.IsTilled(cell))
@@ -119,7 +128,6 @@ public class PlayerFarmInteract : MonoBehaviour
         pos.z = 0f;
         GameObject cropObj = Instantiate(seed.cropPrefab, pos, Quaternion.identity);
 
-        // ✅ THIS IS THE FIX
         Crop crop = cropObj.GetComponent<Crop>();
         if (crop != null)
         {
@@ -140,7 +148,6 @@ public class PlayerFarmInteract : MonoBehaviour
         }
     }
 
-    // harvest item and add to inventory (with yield)
     void Harvest(Vector3Int cell)
     {
         if (!farmManager.HasCrop(cell))
@@ -162,7 +169,6 @@ public class PlayerFarmInteract : MonoBehaviour
 
         if (harvestItem != null)
         {
-            // 🎲 RANDOM YIELD
             int amount = Random.Range(
                 harvestItem.minYield,
                 harvestItem.maxYield + 1
@@ -179,4 +185,59 @@ public class PlayerFarmInteract : MonoBehaviour
         farmManager.RemoveCrop(cell);
         Destroy(cropObj);
     }
+
+    void UseResourceTool(ItemData tool, Vector3Int cell)
+    {
+        if (groundTilemap == null)
+        {
+            Debug.LogError("Ground Tilemap is missing. Cannot convert cell to world position.");
+            return;
+        }
+
+        Vector3 hitWorldPosition = groundTilemap.GetCellCenterWorld(cell);
+        hitWorldPosition.z = 0f;
+
+        Collider2D[] hits = Physics2D.OverlapCircleAll(
+            hitWorldPosition,
+            resourceHitRadius,
+            resourceLayer
+        );
+
+        if (hits.Length == 0)
+        {
+            Debug.Log("❌ No tree or rock here.");
+            return;
+        }
+
+        ResourceNode closestNode = null;
+        float closestDistance = Mathf.Infinity;
+
+        foreach (Collider2D hit in hits)
+        {
+            ResourceNode node = hit.GetComponentInParent<ResourceNode>();
+
+            if (node == null)
+                continue;
+
+            float distance = Vector2.Distance(
+                hitWorldPosition,
+                hit.ClosestPoint(hitWorldPosition)
+            );
+
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestNode = node;
+            }
+        }
+
+        if (closestNode == null)
+        {
+            Debug.Log("❌ Hit object has no ResourceNode script.");
+            return;
+        }
+
+        closestNode.TryHit(tool.itemName, inventory);
+    }
+
 }
