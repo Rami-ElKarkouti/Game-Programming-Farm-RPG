@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+// this script manages the state of each farm tile (tilled, watered, crop) and handles all logic related to farming actions like tilling, watering, planting, and crop growth. It uses a tilemap-based approach for
+// better performance and easier integration with Unity's tilemap system. The FarmManagerA script replaces the older FarmManager script which had more limited functionality and was based on individual tile objects rather than a tilemap.
 public class FarmManagerA : MonoBehaviour
 {
     [Header("Tilemaps")]
@@ -86,6 +88,19 @@ public class FarmManagerA : MonoBehaviour
     public Vector3 GetCellCenterWorld(Vector3Int cell)
     {
         return groundTilemap.GetCellCenterWorld(cell);
+    }
+
+    public GameObject GetCrop(Vector3Int cell)
+    {
+        if (!farmTiles.ContainsKey(cell)) return null;
+        return farmTiles[cell].crop;
+    }
+
+    public void RemoveCrop(Vector3Int cell)
+    {
+        if (!farmTiles.ContainsKey(cell)) return;
+
+        farmTiles[cell].crop = null;
     }
 }
 

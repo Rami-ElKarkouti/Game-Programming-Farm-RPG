@@ -72,10 +72,10 @@ public class PlayerFarmInteract : MonoBehaviour
                 break;
 
             case "Sickle":
-                Debug.Log("Sickle not implemented yet");
+                Harvest(cell);
                 break;
+        }
     }
-}
 
 
     bool IsValidSoilGround(Vector3Int cell)
@@ -138,5 +138,45 @@ public class PlayerFarmInteract : MonoBehaviour
             Destroy(cropObj);
             Debug.Log("❌ Plant failed");
         }
+    }
+
+    // harvest item and add to inventory (with yield)
+    void Harvest(Vector3Int cell)
+    {
+        if (!farmManager.HasCrop(cell))
+        {
+            Debug.Log("❌ No crop here");
+            return;
+        }
+
+        GameObject cropObj = farmManager.GetCrop(cell);
+        Crop crop = cropObj.GetComponent<Crop>();
+
+        if (crop == null || !crop.IsFullyGrown())
+        {
+            Debug.Log("❌ Not ready");
+            return;
+        }
+
+        ItemData harvestItem = crop.GetHarvestItem();
+
+        if (harvestItem != null)
+        {
+            // 🎲 RANDOM YIELD
+            int amount = Random.Range(
+                harvestItem.minYield,
+                harvestItem.maxYield + 1
+            );
+
+            for (int i = 0; i < amount; i++)
+            {
+                inventory.AddItem(harvestItem);
+            }
+
+            Debug.Log($"🌾 Harvested {amount}x {harvestItem.itemName}");
+        }
+
+        farmManager.RemoveCrop(cell);
+        Destroy(cropObj);
     }
 }
