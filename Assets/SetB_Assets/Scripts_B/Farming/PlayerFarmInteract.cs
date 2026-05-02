@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class PlayerFarmInteract : MonoBehaviour
 {
@@ -6,6 +7,11 @@ public class PlayerFarmInteract : MonoBehaviour
     [SerializeField] private InventoryManagern inventory;
     [SerializeField] private TileHighlightManager highlight;
     [SerializeField] private FarmManagerA farmManager;
+
+
+    [Header("Valid Soil Ground")]
+    [SerializeField] private Tilemap groundTilemap;
+    [SerializeField] private TileBase[] validSoilTiles;
 
     void Update()
     {
@@ -48,11 +54,16 @@ public class PlayerFarmInteract : MonoBehaviour
     }
 
     // ✅ TILE-BASED TOOL USE
-    void UseTool(ItemData item, Vector3Int cell)
-    {
+    void UseTool(ItemData item, Vector3Int cell){
         switch (item.itemName)
         {
             case "Hoe":
+                if (!IsValidSoilGround(cell))
+                {
+                    Debug.Log("❌ Cannot till here. Not valid soil ground.");
+                    return;
+                }
+
                 farmManager.TillTile(cell);
                 break;
 
@@ -63,8 +74,31 @@ public class PlayerFarmInteract : MonoBehaviour
             case "Sickle":
                 Debug.Log("Sickle not implemented yet");
                 break;
-        }
     }
+}
+
+
+    bool IsValidSoilGround(Vector3Int cell)
+        {
+            if (groundTilemap == null)
+            {
+                Debug.LogError("Ground Tilemap is missing!");
+                return false;
+            }
+
+            TileBase tileAtCell = groundTilemap.GetTile(cell);
+
+            if (tileAtCell == null)
+                return false;
+
+            foreach (TileBase validTile in validSoilTiles)
+            {
+                if (tileAtCell == validTile)
+                    return true;
+            }
+
+            return false;
+        }
 
     // ✅ TILE-BASED PLANTING
     void PlantSeed(ItemData seed, Vector3Int cell)

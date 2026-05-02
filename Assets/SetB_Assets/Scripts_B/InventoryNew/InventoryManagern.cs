@@ -48,7 +48,37 @@ public class InventoryManagern : MonoBehaviour
                 ChangeSelectedSlot(number - 1);
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            GiveItemByName("Hoe");
+        }
     }
+
+
+    //needed to bring back the shovel temporarily
+    public void GiveItemByName(string itemName)
+        {
+            ItemData itemData = FindItemByName(itemName);
+
+            if (itemData == null)
+            {
+                Debug.LogWarning("Item not found: " + itemName);
+                return;
+            }
+
+            bool added = AddItem(itemData);
+
+            if (added)
+            {
+                SaveInventory();
+                Debug.Log(itemName + " added back to inventory!");
+            }
+            else
+            {
+                Debug.LogWarning("Inventory full. Could not add " + itemName);
+            }
+        }
 
     public void ChangeSelectedSlot(int newValue)
     {

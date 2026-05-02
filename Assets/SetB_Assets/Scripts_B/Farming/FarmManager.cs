@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class FarmManager : MonoBehaviour
 {
@@ -7,6 +8,10 @@ public class FarmManager : MonoBehaviour
 
     [Header("Player Stamina")]
     public PlayerStamina playerStamina;
+
+    [Header("Valid Farming Ground")]
+    public Tilemap groundTilemap;
+    public TileBase validFarmGroundTile;
 
     void Update()
     {
@@ -43,7 +48,7 @@ public class FarmManager : MonoBehaviour
             return;
         }
 
-        // 🌱 FARM TILE
+        // FARM TILE
         FarmTile tile = hit.collider.GetComponent<FarmTile>();
         if (tile == null) return;
 
@@ -57,7 +62,7 @@ public class FarmManager : MonoBehaviour
 
         if (heldItemTile.itemType == ItemType.Tool)
         {
-            HandleToolOnTile(heldItemTile, tile);
+            HandleToolOnTile(heldItemTile, tile, worldPoint);
         }
         else if (heldItemTile.itemType == ItemType.Seed)
         {
@@ -65,13 +70,22 @@ public class FarmManager : MonoBehaviour
         }
     }
 
-    void HandleToolOnTile(ItemData item, FarmTile tile)
+    void HandleToolOnTile(ItemData item, FarmTile tile, Vector2 worldPoint)
     {
         switch (item.itemName)
         {
             case "Hoe":
-                if (!tile.isHoed && playerStamina.UseStamina(item.staminaCost))
-                    tile.HoeTile();
+                if (!tile.isHoed && IsValidFarmGround(worldPoint))
+                {
+                    if (playerStamina.UseStamina(item.staminaCost))
+                    {
+                        tile.HoeTile();
+                    }
+                }
+                else
+                {
+                    Debug.Log("Cannot hoe here. Invalid ground.");
+                }
                 break;
 
             case "Watering Can":
@@ -88,6 +102,20 @@ public class FarmManager : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    bool IsValidFarmGround(Vector2 worldPoint)
+    {
+        if (groundTilemap == null || validFarmGroundTile == null)
+        {
+            Debug.LogWarning("Ground Tilemap or Valid Farm Ground Tile is not assigned.");
+            return false;
+        }
+
+        Vector3Int cellPosition = groundTilemap.WorldToCell(worldPoint);
+        TileBase clickedTile = groundTilemap.GetTile(cellPosition);
+
+        return clickedTile == validFarmGroundTile;
     }
 
     void HandleSeedOnTile(ItemData item, FarmTile tile)
