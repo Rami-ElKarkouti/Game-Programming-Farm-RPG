@@ -15,6 +15,7 @@ public class PlayerFarmInteract : MonoBehaviour
     [Header("Resource Nodes")]
     [SerializeField] private LayerMask resourceLayer;
     [SerializeField] private float resourceHitRadius = 0.35f;
+    [SerializeField] private PlayerStamina playerStamina;
 
     void Update()
     {
@@ -58,15 +59,45 @@ public class PlayerFarmInteract : MonoBehaviour
 
     void UseTool(ItemData item, Vector3Int cell)
     {
+        bool actionValid = false;
+
         switch (item.itemName)
         {
             case "Hoe":
-                if (!IsValidSoilGround(cell))
-                {
-                    Debug.Log("❌ Cannot till here. Not valid soil ground.");
-                    return;
-                }
+                actionValid = IsValidSoilGround(cell);
+                break;
 
+            case "Watering Can":
+                actionValid = true;
+                break;
+
+            case "Sickle":
+                actionValid = farmManager.HasCrop(cell);
+                break;
+
+            case "Axe":
+            case "Pickaxe":
+                actionValid = true;
+                break;
+        }
+
+        if (!actionValid)
+        {
+            Debug.Log("❌ Invalid action");
+            return;
+        }
+
+        // consume stamina
+        if (!playerStamina.UseStamina(item.staminaCost))
+        {
+            Debug.Log("❌ Not enough stamina");
+            return;
+        }
+
+        //  perform action
+        switch (item.itemName)
+        {
+            case "Hoe":
                 farmManager.TillTile(cell);
                 break;
 
@@ -79,9 +110,6 @@ public class PlayerFarmInteract : MonoBehaviour
                 break;
 
             case "Axe":
-                UseResourceTool(item, cell);
-                break;
-
             case "Pickaxe":
                 UseResourceTool(item, cell);
                 break;

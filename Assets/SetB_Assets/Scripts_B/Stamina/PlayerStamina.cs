@@ -8,6 +8,25 @@ public class PlayerStamina : MonoBehaviour
 
     public UnityAction<int, int> OnStaminaChanged; // current, max
 
+    [SerializeField] private float regenInterval = 6f;
+    [SerializeField] private int regenAmount = 3;
+
+    private float regenTimer;
+
+    void Update()
+    {
+        if (currentStamina >= maxStamina)
+            return;
+
+        regenTimer += Time.deltaTime;
+
+        if (regenTimer >= regenInterval)
+    {
+        regenTimer -= regenInterval; 
+        RestoreStamina(regenAmount);
+    }
+    }
+
     void Awake()
     {
         currentStamina = maxStamina;
