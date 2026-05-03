@@ -280,7 +280,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (hitTransform.name.Contains("House"))
             {
-                return true;
+                return !HouseDoorEnter.IsPlayerInsideHouse(transform, hitTransform);
             }
 
             hitTransform = hitTransform.parent;

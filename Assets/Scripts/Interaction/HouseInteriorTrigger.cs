@@ -5,19 +5,27 @@ public class HouseInteriorTrigger : MonoBehaviour
 {
     [SerializeField] private Tilemap roofTilemap;
 
+    public void SetRoofVisible(bool isVisible)
+    {
+        if (roofTilemap != null)
+        {
+            roofTilemap.gameObject.SetActive(isVisible);
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && roofTilemap != null && HouseDoorEnter.HasEnteredHouse(transform))
+        if (collision.CompareTag("Player") && HouseDoorEnter.HasEnteredHouse(transform))
         {
-            roofTilemap.gameObject.SetActive(false);
+            SetRoofVisible(false);
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && roofTilemap != null)
+        if (collision.CompareTag("Player"))
         {
-            roofTilemap.gameObject.SetActive(true);
+            SetRoofVisible(true);
             HouseDoorEnter.LeaveHouse(transform);
         }
     }
