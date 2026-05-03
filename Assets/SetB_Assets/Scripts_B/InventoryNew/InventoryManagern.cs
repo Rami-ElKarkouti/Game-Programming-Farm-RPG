@@ -16,9 +16,17 @@ public class InventoryManagern : MonoBehaviour
 
     public ItemData CurrentSelectedItem { get; private set; }
 
+    [SerializeField] private bool resetInventoryOnStart = false;
+
     void Start()
     {
-        PlayerPrefs.DeleteKey("Inventory"); 
+        if (inventorySlots == null || inventorySlots.Length == 0)
+        {
+            Debug.LogError("❌ No inventory slots assigned!");
+            return;
+        }
+
+        ClearAllSlots();
 
         if (PlayerPrefs.HasKey("Inventory"))
         {
@@ -31,6 +39,19 @@ public class InventoryManagern : MonoBehaviour
         }
 
         ChangeSelectedSlot(0);
+    }
+
+    void ClearAllSlots()
+    {
+        for (int i = 0; i < inventorySlots.Length; i++)
+        {
+            foreach (Transform child in inventorySlots[i].transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
+        Debug.Log("🧹 All inventory slots cleared");
     }
 
     void OnApplicationQuit()
@@ -49,36 +70,15 @@ public class InventoryManagern : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.L))
+     
+        // Reset Inventory with O key (for testing)
+        if (Input.GetKeyDown(KeyCode.O))
         {
-            GiveItemByName("Hoe");
+            ResetInventory();
         }
+
     }
 
-
-    //needed to bring back the shovel temporarily
-    public void GiveItemByName(string itemName)
-        {
-            ItemData itemData = FindItemByName(itemName);
-
-            if (itemData == null)
-            {
-                Debug.LogWarning("Item not found: " + itemName);
-                return;
-            }
-
-            bool added = AddItem(itemData);
-
-            if (added)
-            {
-                SaveInventory();
-                Debug.Log(itemName + " added back to inventory!");
-            }
-            else
-            {
-                Debug.LogWarning("Inventory full. Could not add " + itemName);
-            }
-        }
 
     public void ChangeSelectedSlot(int newValue)
     {
@@ -235,6 +235,9 @@ public class InventoryManagern : MonoBehaviour
 
     void LoadInventory()
     {
+
+        ClearAllSlots(); // 🔥 ADD THIS FIRST
+        
         if (!PlayerPrefs.HasKey("Inventory")) return;
 
         string json = PlayerPrefs.GetString("Inventory");
@@ -301,5 +304,19 @@ public class InventoryManagern : MonoBehaviour
         }
 
         UpdateSelectedItem();
+    }
+
+    public void ResetInventory()
+    {
+        PlayerPrefs.DeleteKey("Inventory");
+        PlayerPrefs.Save();
+
+        Debug.Log("🧹 Manual Inventory Reset");
+
+        ClearAllSlots();
+        GiveStarterItems();
+        SaveInventory();
+
+        ChangeSelectedSlot(0);
     }
 }

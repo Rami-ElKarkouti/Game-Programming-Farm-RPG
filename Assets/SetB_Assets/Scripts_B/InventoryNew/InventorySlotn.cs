@@ -47,7 +47,7 @@ public class InventorySlotn : MonoBehaviour, IDropHandler, IPointerClickHandler
     }
 
     public bool IsEmpty()
-    {
-        return transform.childCount == 0;
-    }
+{
+    return GetComponentInChildren<InventoryItem>() == null;
+}
 }
