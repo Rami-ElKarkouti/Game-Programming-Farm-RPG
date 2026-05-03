@@ -25,16 +25,21 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private Collider2D playerCollider;
 
+    private static readonly int IsWalkingHash = Animator.StringToHash("isWalking");
+
     private Rigidbody2D rb;
     private Rigidbody rb3d;
+    private Animator animator;
     private Vector2 movement;
     private readonly RaycastHit2D[] movementHits = new RaycastHit2D[16];
+    private readonly Collider2D[] nextStepHits = new Collider2D[32];
     private bool onLadder = false;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rb3d = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
 
         if (playerCollider == null)
         {
@@ -60,6 +65,11 @@ public class PlayerMovement : MonoBehaviour
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
         movement = movement.normalized;
+
+        if (animator != null)
+        {
+            animator.SetBool(IsWalkingHash, movement.sqrMagnitude > 0f);
+        }
     }
 
     private void FixedUpdate()
@@ -161,6 +171,11 @@ public class PlayerMovement : MonoBehaviour
             return false;
         }
 
+        if (HasBlockingObjectAtNextStep(fromPosition, toPosition))
+        {
+            return true;
+        }
+
         ContactFilter2D filter = new ContactFilter2D
         {
             useTriggers = false,
@@ -172,6 +187,36 @@ public class PlayerMovement : MonoBehaviour
         {
             Collider2D hitCollider = movementHits[i].collider;
             if (hitCollider != null && BlocksPlayerMovement(hitCollider))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool HasBlockingObjectAtNextStep(Vector2 fromPosition, Vector2 toPosition)
+    {
+        if (playerCollider == null)
+        {
+            return false;
+        }
+
+        Bounds playerBounds = playerCollider.bounds;
+        Vector2 delta = toPosition - fromPosition;
+        Vector2 probeCenter = (Vector2)playerBounds.center + delta;
+        Vector2 probeSize = new Vector2(playerBounds.size.x, playerBounds.size.y);
+
+        int hitCount = Physics2D.OverlapBoxNonAlloc(probeCenter, probeSize, 0f, nextStepHits);
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider2D hitCollider = nextStepHits[i];
+            if (hitCollider == null || hitCollider == playerCollider)
+            {
+                continue;
+            }
+
+            if (BlocksPlayerMovement(hitCollider))
             {
                 return true;
             }
@@ -214,7 +259,8 @@ public class PlayerMovement : MonoBehaviour
     private bool BlocksPlayerMovement(Collider2D hitCollider)
     {
         string objectName = hitCollider.gameObject.name;
-        return objectName.Contains("Rock")
+        return NameOrParentContains(hitCollider.transform, "Rock")
+            || NameOrParentContains(hitCollider.transform, "Tree")
             || objectName.Contains("Water")
             || objectName.Contains("Bridge2Blocker")
             || IsHouseBodyCollider(hitCollider);
@@ -233,6 +279,21 @@ public class PlayerMovement : MonoBehaviour
         while (hitTransform != null)
         {
             if (hitTransform.name.Contains("House"))
+            {
+                return true;
+            }
+
+            hitTransform = hitTransform.parent;
+        }
+
+        return false;
+    }
+
+    private bool NameOrParentContains(Transform hitTransform, string namePart)
+    {
+        while (hitTransform != null)
+        {
+            if (hitTransform.name.Contains(namePart))
             {
                 return true;
             }

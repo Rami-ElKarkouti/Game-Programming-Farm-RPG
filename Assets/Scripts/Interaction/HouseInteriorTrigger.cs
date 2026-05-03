@@ -7,7 +7,7 @@ public class HouseInteriorTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && roofTilemap != null)
+        if (collision.CompareTag("Player") && roofTilemap != null && HouseDoorEnter.HasEnteredHouse(transform))
         {
             roofTilemap.gameObject.SetActive(false);
         }
@@ -18,6 +18,7 @@ public class HouseInteriorTrigger : MonoBehaviour
         if (collision.CompareTag("Player") && roofTilemap != null)
         {
             roofTilemap.gameObject.SetActive(true);
+            HouseDoorEnter.LeaveHouse(transform);
         }
     }
 }
