@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class ResourceNode : MonoBehaviour
 {
+    [Header("Save")]
+    [SerializeField] private string resourceId;
+
     [Header("Tool Requirement")]
     [SerializeField] private string requiredToolName = "Axe";
 
@@ -29,6 +32,9 @@ public class ResourceNode : MonoBehaviour
 
     private void Awake()
     {
+        if (string.IsNullOrWhiteSpace(resourceId))
+            resourceId = gameObject.scene.name + "_" + gameObject.name + "_" + transform.position.x + "_" + transform.position.y;
+
         currentHealth = maxHealth;
 
         if (normalVisual != null)
@@ -42,24 +48,22 @@ public class ResourceNode : MonoBehaviour
     {
         if (depleted)
         {
-            Debug.Log("❌ This resource is depleted.");
+            Debug.Log("This resource is depleted.");
             return false;
         }
 
         if (toolName != requiredToolName)
         {
-            Debug.Log($"❌ Wrong tool. Need {requiredToolName}, but used {toolName}.");
+            Debug.Log("Wrong tool. Need " + requiredToolName + ", but used " + toolName + ".");
             return false;
         }
 
         currentHealth--;
 
-        Debug.Log($"{gameObject.name} hit with {toolName}. HP left: {currentHealth}");
+        Debug.Log(gameObject.name + " hit with " + toolName + ". HP left: " + currentHealth);
 
         if (currentHealth <= 0)
-        {
             Deplete(inventory);
-        }
 
         return true;
     }
@@ -67,6 +71,7 @@ public class ResourceNode : MonoBehaviour
     private void Deplete(InventoryManagern inventory)
     {
         depleted = true;
+        currentHealth = 0;
 
         if (normalVisual != null)
             normalVisual.SetActive(false);
@@ -95,18 +100,16 @@ public class ResourceNode : MonoBehaviour
 
         if (rewardItem == null)
         {
-            Debug.LogWarning($"{gameObject.name} has no reward item assigned.");
+            Debug.LogWarning(gameObject.name + " has no reward item assigned.");
             return;
         }
 
         int amount = Random.Range(minRewardAmount, maxRewardAmount + 1);
 
         for (int i = 0; i < amount; i++)
-        {
             inventory.AddItem(rewardItem);
-        }
 
-        Debug.Log($"Collected {amount}x {rewardItem.itemName}");
+        Debug.Log("Collected " + amount + "x " + rewardItem.itemName);
     }
 
     private IEnumerator RegrowAfterDelay()
@@ -132,6 +135,52 @@ public class ResourceNode : MonoBehaviour
                 col.enabled = true;
         }
 
-        Debug.Log($"{gameObject.name} regrew.");
+        Debug.Log(gameObject.name + " regrew.");
+    }
+
+    public string ResourceId
+    {
+        get { return resourceId; }
+    }
+
+    public ResourceNodeSaveData GetSaveData()
+    {
+        return new ResourceNodeSaveData
+        {
+            resourceId = resourceId,
+            currentHealth = currentHealth,
+            depleted = depleted
+        };
+    }
+
+    public void LoadSaveData(ResourceNodeSaveData data)
+    {
+        if (data == null)
+            return;
+
+        currentHealth = Mathf.Clamp(data.currentHealth, 0, maxHealth);
+        depleted = data.depleted;
+
+        if (depleted)
+            currentHealth = 0;
+
+        ApplySavedVisualState();
+
+        Debug.Log("Resource loaded: " + resourceId);
+    }
+
+    private void ApplySavedVisualState()
+    {
+        if (normalVisual != null)
+            normalVisual.SetActive(!depleted);
+
+        if (depletedVisual != null)
+            depletedVisual.SetActive(depleted);
+
+        foreach (Collider2D col in collidersToDisableWhenDepleted)
+        {
+            if (col != null)
+                col.enabled = !depleted;
+        }
     }
 }

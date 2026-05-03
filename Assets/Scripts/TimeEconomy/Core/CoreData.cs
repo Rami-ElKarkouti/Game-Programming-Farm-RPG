@@ -27,6 +27,12 @@ public class InventoryItemData
     public string ItemName;
     public int Quantity;
 
+    public InventoryItemData()
+    {
+        ItemName = "";
+        Quantity = 0;
+    }
+
     public InventoryItemData(string itemName, int quantity)
     {
         ItemName = itemName;
@@ -44,6 +50,30 @@ public class ShopItem
 }
 
 [System.Serializable]
+public class FarmTileSaveData
+{
+    public int x;
+    public int y;
+    public int z;
+
+    public bool isTilled;
+    public bool isWatered;
+
+    public bool hasCrop;
+    public string cropItemName;
+    public int cropGrowthStage;
+    public bool cropWatered;
+}
+
+[System.Serializable]
+public class ResourceNodeSaveData
+{
+    public string resourceId;
+    public int currentHealth;
+    public bool depleted;
+}
+
+[System.Serializable]
 public class SaveData
 {
     public int Money;
@@ -51,6 +81,19 @@ public class SaveData
     public int Minute;
     public int DayNumber;
     public Season Season;
-    public List<InventoryItemData> inventory = new List<InventoryItemData>();
+
+    public List<InventorySaveData> inventory = new List<InventorySaveData>();
+    public int SelectedInventorySlot;
+
     public List<int> ShopStock = new List<int>();
+
+    public float PlayerX;
+    public float PlayerY;
+    public float PlayerZ;
+
+    public int CurrentStamina;
+    public int MaxStamina;
+
+    public List<FarmTileSaveData> FarmTiles = new List<FarmTileSaveData>();
+    public List<ResourceNodeSaveData> ResourceNodes = new List<ResourceNodeSaveData>();
 }

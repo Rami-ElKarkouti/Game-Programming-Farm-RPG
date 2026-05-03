@@ -76,8 +76,19 @@ public class ShopSystem : MonoBehaviour
             return false;
         }
 
-        if (InventorySystem.Instance != null)
-            InventorySystem.Instance.AddItem(item.itemName, 1);
+        if (InventoryManagern.Instance == null)
+        {
+            Debug.LogWarning("ShopSystem: InventoryManagern is missing.");
+            MoneySystem.Instance.AddMoney(item.price);
+            return false;
+        }
+
+        if (!InventoryManagern.Instance.AddItemByName(item.itemName, 1))
+        {
+            Debug.LogWarning("ShopSystem: Could not add item to inventory: " + item.itemName);
+            MoneySystem.Instance.AddMoney(item.price);
+            return false;
+        }
 
         item.stock--;
         GameEventSystem.shopStockChanged.Invoke();
@@ -87,12 +98,12 @@ public class ShopSystem : MonoBehaviour
 
     public bool SellItem(string itemName)
     {
-        if (InventorySystem.Instance == null || MoneySystem.Instance == null)
+        if (InventoryManagern.Instance == null || MoneySystem.Instance == null)
             return false;
 
         ShopItem item = items.Find(i => i.itemName == itemName);
 
-        if (!InventorySystem.Instance.RemoveItem(itemName, 1))
+        if (!InventoryManagern.Instance.RemoveItemByName(itemName, 1))
         {
             Debug.Log("Item not in inventory: " + itemName);
             return false;
