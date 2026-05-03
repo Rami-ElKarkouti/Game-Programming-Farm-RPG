@@ -25,4 +25,4 @@ MonoBehaviour:
   harvestItem: {fileID: 0}
   minYield: 1
   maxYield: 1
-  staminaCost: 4
+  staminaCost: 5
