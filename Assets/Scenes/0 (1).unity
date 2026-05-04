@@ -5981,7 +5981,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 476fd9a6c7be20142b41ca8bba0842ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimalInfoUI
-  _animalInteractionManager: {fileID: 0}
+  _animalInteractionManager: {fileID: 1503981113}
   _nameText: {fileID: 0}
   _typeText: {fileID: 0}
   _hungerText: {fileID: 0}
@@ -7245,6 +7245,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1446273320}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1503981113 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7027408732369311871, guid: 0743caee5f46ac643aecc6d840371587, type: 3}
+  m_PrefabInstance: {fileID: 793621450}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83daf1d3ae1f3d34ab358bfacab350a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimalInteractionManager
 --- !u!1001 &1508361230
 PrefabInstance:
   m_ObjectHideFlags: 0
