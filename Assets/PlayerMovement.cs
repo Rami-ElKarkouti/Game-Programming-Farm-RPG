@@ -258,14 +258,20 @@ public class PlayerMovement : MonoBehaviour
 
     private bool BlocksPlayerMovement(Collider2D hitCollider)
     {
+        if (hitCollider.isTrigger)
+        {
+            return false;
+        }
+
         string objectName = hitCollider.gameObject.name;
+
         return NameOrParentContains(hitCollider.transform, "Rock")
             || NameOrParentContains(hitCollider.transform, "Tree")
+            || NameOrParentContains(hitCollider.transform, "Shop")
             || objectName.Contains("Water")
             || objectName.Contains("Bridge2Blocker")
             || IsHouseBodyCollider(hitCollider);
     }
-
     private bool IsHouseBodyCollider(Collider2D hitCollider)
     {
         Transform hitTransform = hitCollider.transform;
