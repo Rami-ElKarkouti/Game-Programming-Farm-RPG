@@ -1,21 +1,64 @@
 using UnityEngine;
 
+/// <summary>
+/// Listens to the shared Set C time system and updates NPC schedules when the hour changes.
+/// This replaces the old mock-time button driven approach.
+/// </summary>
 public class NPCScheduleManager : MonoBehaviour
 {
-    [SerializeField] private MockTimeManager _mockTimeManager;
+    // All NPC movement scripts that should react to time changes.
     [SerializeField] private NPCMovement[] _npcMovements;
 
-    public void AdvanceHourAndUpdateNPCs()
+    // Used so schedules only update once per hour.
+    private int _lastProcessedHour = -1;
+
+    /// <summary>
+    /// Subscribes to Set C's timeChanged event.
+    /// </summary>
+    private void OnEnable()
     {
-        if (_mockTimeManager == null)
+        GameEventSystem.timeChanged.AddListener(OnTimeChanged);
+    }
+
+    /// <summary>
+    /// Unsubscribes from Set C's timeChanged event.
+    /// </summary>
+    private void OnDisable()
+    {
+        GameEventSystem.timeChanged.RemoveListener(OnTimeChanged);
+    }
+
+    /// <summary>
+    /// Initializes NPC positions based on the current time when the scene starts.
+    /// </summary>
+    private void Start()
+    {
+        if (TimeSystem.Instance != null)
         {
-            Debug.LogWarning("MockTimeManager is not assigned.");
+            UpdateNPCSchedules(TimeSystem.Instance.Hour);
+        }
+    }
+
+    /// <summary>
+    /// Called whenever Set C time changes.
+    /// Only updates schedules when the hour changes.
+    /// </summary>
+    private void OnTimeChanged(int hour, int minute, int day)
+    {
+        if (hour == _lastProcessedHour)
+        {
             return;
         }
 
-        _mockTimeManager.AdvanceHour();
+        UpdateNPCSchedules(hour);
+    }
 
-        int currentHour = _mockTimeManager.CurrentHour;
+    /// <summary>
+    /// Updates all NPCs with the new current hour.
+    /// </summary>
+    private void UpdateNPCSchedules(int currentHour)
+    {
+        _lastProcessedHour = currentHour;
 
         for (int i = 0; i < _npcMovements.Length; i++)
         {

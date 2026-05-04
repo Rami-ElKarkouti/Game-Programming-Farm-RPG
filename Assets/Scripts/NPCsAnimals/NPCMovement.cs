@@ -12,9 +12,11 @@ public class NPCScheduleEntry
 public class NPCMovement : MonoBehaviour
 {
     private Animator _animator;
+    private Vector3 _originalScale;
     private void Awake()
     {
         _animator = GetComponent<Animator>();
+        _originalScale = transform.localScale;
     }
     private void SetWalkingAnimation(bool isWalking)
     {
@@ -41,6 +43,33 @@ public class NPCMovement : MonoBehaviour
         }
     }
 
+    private void UpdateFacingDirection()
+    {
+        if (_currentTarget == null)
+        {
+            return;
+        }
+
+        float horizontalDifference = _currentTarget.position.x - transform.position.x;
+
+        if (horizontalDifference > 0.01f)
+        {
+            transform.localScale = new Vector3(
+                Mathf.Abs(_originalScale.x),
+                _originalScale.y,
+                _originalScale.z
+            );
+        }
+        else if (horizontalDifference < -0.01f)
+        {
+            transform.localScale = new Vector3(
+                -Mathf.Abs(_originalScale.x),
+                _originalScale.y,
+                _originalScale.z
+            );
+        }
+    }
+
     private void Update()
     {
         if (_currentTarget == null)
@@ -53,6 +82,7 @@ public class NPCMovement : MonoBehaviour
 
         if (distanceToTarget > 0.05f)
         {
+            UpdateFacingDirection();
             SetWalkingAnimation(true);
 
             transform.position = Vector2.MoveTowards(

@@ -2,14 +2,42 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// Handles daily animal production using the shared Set C day system.
+/// When Set C starts a new day, animals advance one day and may produce items.
+/// </summary>
 public class AnimalProductionManager : MonoBehaviour
 {
+    // All animals that should be processed at the start of each new day.
     [SerializeField] private AnimalController[] _animals;
+
+    // UI text used to display today's production and cumulative totals.
     [SerializeField] private TextMeshProUGUI _productionLogText;
 
+    // Running total of produced items across all days.
     private Dictionary<string, int> _productionTotals = new Dictionary<string, int>();
 
-    public void AdvanceDayAndProduce()
+    /// <summary>
+    /// Subscribes to Set C's new-day event.
+    /// </summary>
+    private void OnEnable()
+    {
+        GameEventSystem.newDayStarted.AddListener(HandleNewDay);
+    }
+
+    /// <summary>
+    /// Unsubscribes from Set C's new-day event.
+    /// </summary>
+    private void OnDisable()
+    {
+        GameEventSystem.newDayStarted.RemoveListener(HandleNewDay);
+    }
+
+    /// <summary>
+    /// Called automatically whenever Set C starts a new day.
+    /// This replaces the old mock day button driven approach for Set D logic.
+    /// </summary>
+    private void HandleNewDay()
     {
         string dailyLog = "Today:\n";
 
@@ -20,8 +48,10 @@ public class AnimalProductionManager : MonoBehaviour
                 continue;
             }
 
+            // Advance this animal's daily state.
             _animals[i].AdvanceDay();
 
+            // Check whether it can still produce after daily hunger update.
             if (_animals[i].CanProduce())
             {
                 string item = _animals[i].GetProductionItem();
@@ -45,6 +75,9 @@ public class AnimalProductionManager : MonoBehaviour
         Debug.Log(dailyLog);
     }
 
+    /// <summary>
+    /// Updates the production panel with today's results and cumulative totals.
+    /// </summary>
     private void UpdateProductionLogUI(string dailyLog)
     {
         if (_productionLogText == null)
