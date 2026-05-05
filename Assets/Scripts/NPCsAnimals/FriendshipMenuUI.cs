@@ -40,7 +40,7 @@ public class FriendshipMenuUI : MonoBehaviour
             _menuPanel.SetActive(true);
             Debug.Log("FORCED ON");
 
-            RefreshMenu(); // 👈 correct place
+            RefreshMenu(); 
         }
     }
 
