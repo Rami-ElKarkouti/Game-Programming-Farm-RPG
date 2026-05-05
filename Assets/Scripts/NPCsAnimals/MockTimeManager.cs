@@ -49,4 +49,25 @@ public class MockTimeManager : MonoBehaviour
             _dayText.text = "Day: " + _currentDay;
         }
     }
+
+
+    public MockTimeSaveData GetSaveData()
+    {
+        MockTimeSaveData data = new MockTimeSaveData();
+        data.CurrentHour = _currentHour;
+        data.CurrentDay = _currentDay;
+        return data;
+    }
+
+    public void LoadSaveData(MockTimeSaveData data)
+    {
+        if (data == null)
+        {
+            return;
+        }
+
+        _currentHour = Mathf.Clamp(data.CurrentHour, 0, 23);
+        _currentDay = Mathf.Max(1, data.CurrentDay);
+        UpdateUI();
+    }
 }

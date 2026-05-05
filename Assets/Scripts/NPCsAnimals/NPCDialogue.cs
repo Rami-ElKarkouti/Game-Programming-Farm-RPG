@@ -348,4 +348,29 @@ public class NPCDialogue : MonoBehaviour
 
         return hearts;
     }
+
+
+    public string GetSaveId()
+    {
+        return gameObject.name;
+    }
+
+    public NPCDialogueSaveData GetSaveData()
+    {
+        NPCDialogueSaveData data = new NPCDialogueSaveData();
+        data.NPCId = GetSaveId();
+        data.CurrentRelationship = _currentRelationship;
+        return data;
+    }
+
+    public void LoadSaveData(NPCDialogueSaveData data)
+    {
+        if (data == null)
+        {
+            return;
+        }
+
+        _currentRelationship = Mathf.Clamp(data.CurrentRelationship, 0, _maxRelationship);
+        EndDialogue();
+    }
 }

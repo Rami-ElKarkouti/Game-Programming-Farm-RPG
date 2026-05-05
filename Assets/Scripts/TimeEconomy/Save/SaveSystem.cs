@@ -53,7 +53,17 @@ public class SaveSystem : MonoBehaviour
             MaxStamina = playerStamina.GetMaxStamina(),
 
             FarmTiles = farmManager.GetFarmSaveData(),
-            ResourceNodes = GetResourceNodeSaveData()
+            ResourceNodes = GetResourceNodeSaveData(),
+
+            Animals = GetAnimalSaveData(),
+            AnimalInteraction = GetAnimalInteractionSaveData(),
+            AnimalProduction = GetAnimalProductionSaveData(),
+
+            NPCMovements = GetNPCMovementSaveData(),
+            NPCScheduleManager = GetNPCScheduleManagerSaveData(),
+            NPCDialogues = GetNPCDialogueSaveData(),
+
+            MockTime = GetMockTimeSaveData()
         };
 
         string json = JsonUtility.ToJson(data, true);
@@ -91,6 +101,16 @@ public class SaveSystem : MonoBehaviour
 
         farmManager.LoadFarmSaveData(data.FarmTiles);
         LoadResourceNodeSaveData(data.ResourceNodes);
+
+        LoadAnimalSaveData(data.Animals);
+        LoadAnimalInteractionSaveData(data.AnimalInteraction);
+        LoadAnimalProductionSaveData(data.AnimalProduction);
+
+        LoadNPCMovementSaveData(data.NPCMovements);
+        LoadNPCScheduleManagerSaveData(data.NPCScheduleManager);
+        LoadNPCDialogueSaveData(data.NPCDialogues);
+
+        LoadMockTimeSaveData(data.MockTime);
 
         Debug.Log("Game Loaded Successfully");
     }
@@ -146,6 +166,200 @@ public class SaveSystem : MonoBehaviour
                     break;
                 }
             }
+        }
+    }
+
+
+    private List<AnimalSaveData> GetAnimalSaveData()
+    {
+        List<AnimalSaveData> data = new List<AnimalSaveData>();
+        AnimalController[] animals = FindObjectsByType<AnimalController>(FindObjectsSortMode.None);
+
+        foreach (AnimalController animal in animals)
+        {
+            if (animal != null)
+            {
+                data.Add(animal.GetSaveData());
+            }
+        }
+
+        return data;
+    }
+
+    private void LoadAnimalSaveData(List<AnimalSaveData> savedAnimals)
+    {
+        if (savedAnimals == null)
+        {
+            return;
+        }
+
+        AnimalController[] animals = FindObjectsByType<AnimalController>(FindObjectsSortMode.None);
+
+        foreach (AnimalController animal in animals)
+        {
+            if (animal == null)
+            {
+                continue;
+            }
+
+            foreach (AnimalSaveData savedAnimal in savedAnimals)
+            {
+                if (savedAnimal != null && savedAnimal.AnimalId == animal.GetSaveId())
+                {
+                    animal.LoadSaveData(savedAnimal);
+                    break;
+                }
+            }
+        }
+    }
+
+    private AnimalInteractionSaveData GetAnimalInteractionSaveData()
+    {
+        AnimalInteractionManager manager = FindFirstObjectByType<AnimalInteractionManager>();
+        return manager != null ? manager.GetSaveData() : new AnimalInteractionSaveData();
+    }
+
+    private void LoadAnimalInteractionSaveData(AnimalInteractionSaveData data)
+    {
+        AnimalInteractionManager manager = FindFirstObjectByType<AnimalInteractionManager>();
+
+        if (manager != null)
+        {
+            manager.LoadSaveData(data);
+        }
+    }
+
+    private AnimalProductionSaveData GetAnimalProductionSaveData()
+    {
+        AnimalProductionManager manager = FindFirstObjectByType<AnimalProductionManager>();
+        return manager != null ? manager.GetSaveData() : new AnimalProductionSaveData();
+    }
+
+    private void LoadAnimalProductionSaveData(AnimalProductionSaveData data)
+    {
+        AnimalProductionManager manager = FindFirstObjectByType<AnimalProductionManager>();
+
+        if (manager != null)
+        {
+            manager.LoadSaveData(data);
+        }
+    }
+
+    private List<NPCMovementSaveData> GetNPCMovementSaveData()
+    {
+        List<NPCMovementSaveData> data = new List<NPCMovementSaveData>();
+        NPCMovement[] npcs = FindObjectsByType<NPCMovement>(FindObjectsSortMode.None);
+
+        foreach (NPCMovement npc in npcs)
+        {
+            if (npc != null)
+            {
+                data.Add(npc.GetSaveData());
+            }
+        }
+
+        return data;
+    }
+
+    private void LoadNPCMovementSaveData(List<NPCMovementSaveData> savedNPCs)
+    {
+        if (savedNPCs == null)
+        {
+            return;
+        }
+
+        NPCMovement[] npcs = FindObjectsByType<NPCMovement>(FindObjectsSortMode.None);
+
+        foreach (NPCMovement npc in npcs)
+        {
+            if (npc == null)
+            {
+                continue;
+            }
+
+            foreach (NPCMovementSaveData savedNPC in savedNPCs)
+            {
+                if (savedNPC != null && savedNPC.NPCId == npc.GetSaveId())
+                {
+                    npc.LoadSaveData(savedNPC);
+                    break;
+                }
+            }
+        }
+    }
+
+    private NPCScheduleManagerSaveData GetNPCScheduleManagerSaveData()
+    {
+        NPCScheduleManager manager = FindFirstObjectByType<NPCScheduleManager>();
+        return manager != null ? manager.GetSaveData() : new NPCScheduleManagerSaveData();
+    }
+
+    private void LoadNPCScheduleManagerSaveData(NPCScheduleManagerSaveData data)
+    {
+        NPCScheduleManager manager = FindFirstObjectByType<NPCScheduleManager>();
+
+        if (manager != null)
+        {
+            manager.LoadSaveData(data);
+        }
+    }
+
+    private List<NPCDialogueSaveData> GetNPCDialogueSaveData()
+    {
+        List<NPCDialogueSaveData> data = new List<NPCDialogueSaveData>();
+        NPCDialogue[] dialogues = FindObjectsByType<NPCDialogue>(FindObjectsSortMode.None);
+
+        foreach (NPCDialogue dialogue in dialogues)
+        {
+            if (dialogue != null)
+            {
+                data.Add(dialogue.GetSaveData());
+            }
+        }
+
+        return data;
+    }
+
+    private void LoadNPCDialogueSaveData(List<NPCDialogueSaveData> savedDialogues)
+    {
+        if (savedDialogues == null)
+        {
+            return;
+        }
+
+        NPCDialogue[] dialogues = FindObjectsByType<NPCDialogue>(FindObjectsSortMode.None);
+
+        foreach (NPCDialogue dialogue in dialogues)
+        {
+            if (dialogue == null)
+            {
+                continue;
+            }
+
+            foreach (NPCDialogueSaveData savedDialogue in savedDialogues)
+            {
+                if (savedDialogue != null && savedDialogue.NPCId == dialogue.GetSaveId())
+                {
+                    dialogue.LoadSaveData(savedDialogue);
+                    break;
+                }
+            }
+        }
+    }
+
+    private MockTimeSaveData GetMockTimeSaveData()
+    {
+        MockTimeManager manager = FindFirstObjectByType<MockTimeManager>();
+        return manager != null ? manager.GetSaveData() : new MockTimeSaveData();
+    }
+
+    private void LoadMockTimeSaveData(MockTimeSaveData data)
+    {
+        MockTimeManager manager = FindFirstObjectByType<MockTimeManager>();
+
+        if (manager != null)
+        {
+            manager.LoadSaveData(data);
         }
     }
 

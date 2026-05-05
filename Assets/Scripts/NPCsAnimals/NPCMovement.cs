@@ -96,4 +96,56 @@ public class NPCMovement : MonoBehaviour
             SetWalkingAnimation(false);
         }
     }
+
+
+    public string GetSaveId()
+    {
+        return gameObject.name;
+    }
+
+    public NPCMovementSaveData GetSaveData()
+    {
+        NPCMovementSaveData data = new NPCMovementSaveData();
+        data.NPCId = GetSaveId();
+        data.PositionX = transform.position.x;
+        data.PositionY = transform.position.y;
+        data.PositionZ = transform.position.z;
+        data.LocalScaleX = transform.localScale.x;
+        data.CurrentScheduleHour = GetCurrentScheduleHour();
+        return data;
+    }
+
+    public void LoadSaveData(NPCMovementSaveData data)
+    {
+        if (data == null)
+        {
+            return;
+        }
+
+        transform.position = new Vector3(data.PositionX, data.PositionY, data.PositionZ);
+        transform.localScale = new Vector3(data.LocalScaleX, transform.localScale.y, transform.localScale.z);
+
+        if (data.CurrentScheduleHour >= 0)
+        {
+            UpdateSchedule(data.CurrentScheduleHour);
+        }
+    }
+
+    private int GetCurrentScheduleHour()
+    {
+        if (_currentTarget == null || _scheduleEntries == null)
+        {
+            return -1;
+        }
+
+        for (int i = 0; i < _scheduleEntries.Count; i++)
+        {
+            if (_scheduleEntries[i] != null && _scheduleEntries[i].targetLocation == _currentTarget)
+            {
+                return _scheduleEntries[i].hour;
+            }
+        }
+
+        return -1;
+    }
 }

@@ -133,4 +133,32 @@ public class AnimalInteractionManager : MonoBehaviour
             _feedbackText.text = "";
         }
     }
+
+
+    public AnimalInteractionSaveData GetSaveData()
+    {
+        AnimalInteractionSaveData data = new AnimalInteractionSaveData();
+        data.SelectedAnimalIndex = _selectedAnimalIndex;
+        return data;
+    }
+
+    public void LoadSaveData(AnimalInteractionSaveData data)
+    {
+        if (data == null)
+        {
+            return;
+        }
+
+        if (_animals == null || _animals.Length == 0)
+        {
+            _selectedAnimalIndex = 0;
+        }
+        else
+        {
+            _selectedAnimalIndex = Mathf.Clamp(data.SelectedAnimalIndex, 0, _animals.Length - 1);
+        }
+
+        UpdateSelectedAnimalUI();
+        ClearFeedback();
+    }
 }
