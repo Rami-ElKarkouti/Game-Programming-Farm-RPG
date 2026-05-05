@@ -246,13 +246,13 @@ public class ShopUIController : MonoBehaviour
         ClearContainer(sellItemContainer);
         SetupContainer(sellItemContainer);
 
-        if (InventorySystem.Instance == null)
+        if (InventoryManagern.Instance == null)
         {
-            CreateInfoRow(sellItemContainer, "No InventorySystem found.");
+            CreateInfoRow(sellItemContainer, "No Inventory found.");
             return;
         }
 
-        List<InventoryItemData> inventory = InventorySystem.Instance.GetInventoryData();
+        List<InventorySaveData> inventory = InventoryManagern.Instance.GetInventoryData();
 
         if (inventory == null || inventory.Count == 0)
         {
@@ -260,13 +260,15 @@ public class ShopUIController : MonoBehaviour
             return;
         }
 
-        foreach (InventoryItemData inventoryItem in inventory)
+        foreach (InventorySaveData inventoryItem in inventory)
         {
             if (inventoryItem == null)
                 continue;
+            if (string.IsNullOrWhiteSpace(inventoryItem.itemName)) continue;
+            if (inventoryItem.count <= 0) continue;
 
-            string itemName = inventoryItem.ItemName;
-            int quantity = inventoryItem.Quantity;
+            string itemName = inventoryItem.itemName;
+            int quantity = inventoryItem.count;
 
             if (quantity <= 0)
                 continue;

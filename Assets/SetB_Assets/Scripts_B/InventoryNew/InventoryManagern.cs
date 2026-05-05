@@ -20,6 +20,11 @@ public class InventoryManagern : MonoBehaviour
 
     [SerializeField] private bool resetInventoryOnStart = false;
 
+    private void NotifyInventoryChanged()
+    {
+    GameEventSystem.inventoryChanged.Invoke();
+    }
+
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -136,6 +141,7 @@ public class InventoryManagern : MonoBehaviour
                 itemInSlot.RefreshCount();
 
                 UpdateSelectedItem();
+                NotifyInventoryChanged();
                 return true;
             }
         }
@@ -148,6 +154,7 @@ public class InventoryManagern : MonoBehaviour
                 SpawnNewItem(itemData, inventorySlots[i]);
 
                 UpdateSelectedItem();
+                NotifyInventoryChanged();
                 return true;
             }
         }
@@ -414,6 +421,7 @@ public class InventoryManagern : MonoBehaviour
         }
 
         UpdateSelectedItem();
+        NotifyInventoryChanged();
         return true;
     }
 
@@ -476,6 +484,7 @@ public class InventoryManagern : MonoBehaviour
         }
 
         UpdateSelectedItem();
+        NotifyInventoryChanged();
     }
 
     public void ResetInventory()
