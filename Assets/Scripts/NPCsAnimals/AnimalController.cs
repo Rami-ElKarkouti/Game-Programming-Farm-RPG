@@ -38,19 +38,23 @@ public class AnimalController : MonoBehaviour
         Debug.Log(_animalName + " was petted.");
     }
 
-    public void AdvanceDay()
+public void AdvanceDay()
+{
+    // Each new day makes the animal more hungry.
+    _currentHunger++;
+    _currentHunger = Mathf.Clamp(_currentHunger, 0, _maxHunger);
+
+    // Only reduce happiness once hunger reaches 30 or more.
+    if (_currentHunger >= 30)
     {
-        _currentHunger++;
-        _currentHunger = Mathf.Clamp(_currentHunger, 0, _maxHunger);
-
-        if (_currentHunger >= 8)
-        {
-            _currentHappiness--;
-            _currentHappiness = Mathf.Clamp(_currentHappiness, 0, _maxHappiness);
-        }
-
-        UpdateAnimalUI();
+        _currentHappiness--;
+        _currentHappiness = Mathf.Clamp(_currentHappiness, 0, _maxHappiness);
     }
+
+    Debug.Log(_animalName + " AdvanceDay called. Hunger = " + _currentHunger + ", Happiness = " + _currentHappiness);
+
+    UpdateAnimalUI();
+}
 
     public bool CanProduce()
     {
