@@ -23,6 +23,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Tilemap bridge2Tilemap;
     [SerializeField] private float bridgeBlockPadding = 0.05f;
 
+    [Header("Player Visuals")]
+    [SerializeField] private Transform visualRoot;
+    [SerializeField] private SpriteRenderer bodyRenderer;
+    [SerializeField] private SpriteRenderer hairRenderer;
+
     [SerializeField] private Collider2D playerCollider;
 
     private static readonly int IsWalkingHash = Animator.StringToHash("isWalking");
@@ -39,8 +44,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         rb3d = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>();
-
+        animator = GetComponentInChildren<Animator>();
         if (playerCollider == null)
         {
             playerCollider = GetComponent<Collider2D>();
@@ -66,9 +70,55 @@ public class PlayerMovement : MonoBehaviour
         movement.y = Input.GetAxisRaw("Vertical");
         movement = movement.normalized;
 
+        UpdatePlayerVisualDirection();
+
         if (animator != null)
         {
             animator.SetBool(IsWalkingHash, movement.sqrMagnitude > 0f);
+        }
+    }
+
+    private void UpdatePlayerVisualDirection()
+    {
+        if (visualRoot == null)
+        {
+            return;
+        }
+
+        if (movement == Vector2.zero)
+        {
+            return;
+        }
+
+        // Horizontal movement
+        if (Mathf.Abs(movement.x) > Mathf.Abs(movement.y))
+        {
+            visualRoot.localRotation = Quaternion.identity;
+
+            bool facingLeft = movement.x < 0f;
+
+            if (bodyRenderer != null)
+            {
+                bodyRenderer.flipX = facingLeft;
+            }
+
+            if (hairRenderer != null)
+            {
+                hairRenderer.flipX = facingLeft;
+            }
+
+            return;
+        }
+
+
+        if (bodyRenderer != null)
+        {
+            bodyRenderer.flipX = false;
+        }
+
+        if (hairRenderer != null)
+        {
+            hairRenderer.flipX = false;
         }
     }
 

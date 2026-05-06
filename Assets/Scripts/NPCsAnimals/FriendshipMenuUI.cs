@@ -27,6 +27,28 @@ public class FriendshipMenuUI : MonoBehaviour
         }
     }
 
+    public void OpenMenu()
+    {
+        if (_menuPanel == null)
+        {
+            return;
+        }
+
+        _menuPanel.SetActive(true);
+        RefreshMenu();
+    }
+
+    public void CloseMenu()
+    {
+        if (_menuPanel == null)
+        {
+            return;
+        }
+
+        _menuPanel.SetActive(false);
+    }
+
+
    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.M))
