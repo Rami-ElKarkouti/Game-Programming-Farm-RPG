@@ -263,7 +263,7 @@ public class InventoryManagern : MonoBehaviour
 
     void LoadInventory()
     {
-        ClearAllSlots(); // 🔥 ADD THIS FIRST
+        ClearAllSlots(); 
 
         if (!PlayerPrefs.HasKey("Inventory")) return;
 
