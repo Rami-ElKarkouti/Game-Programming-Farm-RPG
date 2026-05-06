@@ -27,11 +27,20 @@ public class FriendshipMenuUI : MonoBehaviour
         }
     }
 
-    private void Update()
+   private void Update()
     {
         if (Input.GetKeyDown(KeyCode.M))
         {
-            ToggleMenu();
+            _menuPanel.SetActive(false);
+            Debug.Log("FORCED OFF");
+        }
+
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            _menuPanel.SetActive(true);
+            Debug.Log("FORCED ON");
+
+            RefreshMenu(); 
         }
     }
 

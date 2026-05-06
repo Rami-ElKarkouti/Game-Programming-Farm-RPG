@@ -68,4 +68,29 @@ public class NPCScheduleManager : MonoBehaviour
             }
         }
     }
+
+
+    public NPCScheduleManagerSaveData GetSaveData()
+    {
+        NPCScheduleManagerSaveData data = new NPCScheduleManagerSaveData();
+        data.LastProcessedHour = _lastProcessedHour;
+        return data;
+    }
+
+    public void LoadSaveData(NPCScheduleManagerSaveData data)
+    {
+        if (data == null)
+        {
+            return;
+        }
+
+        if (data.LastProcessedHour >= 0)
+        {
+            UpdateNPCSchedules(data.LastProcessedHour);
+        }
+        else if (TimeSystem.Instance != null)
+        {
+            UpdateNPCSchedules(TimeSystem.Instance.Hour);
+        }
+    }
 }

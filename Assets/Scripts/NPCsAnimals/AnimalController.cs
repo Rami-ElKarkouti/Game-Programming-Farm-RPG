@@ -133,4 +133,33 @@ public class AnimalController : MonoBehaviour
             }
         }
     }
+
+
+    public string GetSaveId()
+    {
+        return gameObject.name;
+    }
+
+    public AnimalSaveData GetSaveData()
+    {
+        AnimalSaveData data = new AnimalSaveData();
+        data.AnimalId = GetSaveId();
+        data.AnimalName = _animalName;
+        data.AnimalType = _animalType;
+        data.CurrentHunger = _currentHunger;
+        data.CurrentHappiness = _currentHappiness;
+        return data;
+    }
+
+    public void LoadSaveData(AnimalSaveData data)
+    {
+        if (data == null)
+        {
+            return;
+        }
+
+        _currentHunger = Mathf.Clamp(data.CurrentHunger, 0, _maxHunger);
+        _currentHappiness = Mathf.Clamp(data.CurrentHappiness, 0, _maxHappiness);
+        UpdateAnimalUI();
+    }
 }

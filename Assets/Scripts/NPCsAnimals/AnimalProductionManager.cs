@@ -94,4 +94,45 @@ public class AnimalProductionManager : MonoBehaviour
 
         _productionLogText.text = dailyLog + totalsText;
     }
+
+
+    public AnimalProductionSaveData GetSaveData()
+    {
+        AnimalProductionSaveData data = new AnimalProductionSaveData();
+
+        foreach (KeyValuePair<string, int> entry in _productionTotals)
+        {
+            ProductionTotalSaveData totalData = new ProductionTotalSaveData();
+            totalData.ItemName = entry.Key;
+            totalData.Quantity = entry.Value;
+            data.ProductionTotals.Add(totalData);
+        }
+
+        return data;
+    }
+
+    public void LoadSaveData(AnimalProductionSaveData data)
+    {
+        _productionTotals.Clear();
+
+        if (data == null || data.ProductionTotals == null)
+        {
+            UpdateProductionLogUI("Today:\n");
+            return;
+        }
+
+        for (int i = 0; i < data.ProductionTotals.Count; i++)
+        {
+            ProductionTotalSaveData totalData = data.ProductionTotals[i];
+
+            if (totalData == null || string.IsNullOrEmpty(totalData.ItemName))
+            {
+                continue;
+            }
+
+            _productionTotals[totalData.ItemName] = totalData.Quantity;
+        }
+
+        UpdateProductionLogUI("Today:\nLoaded saved animal production totals.\n");
+    }
 }

@@ -73,6 +73,67 @@ public class ResourceNodeSaveData
     public bool depleted;
 }
 
+
+[System.Serializable]
+public class AnimalSaveData
+{
+    public string AnimalId;
+    public string AnimalName;
+    public string AnimalType;
+    public int CurrentHunger;
+    public int CurrentHappiness;
+}
+
+[System.Serializable]
+public class AnimalInteractionSaveData
+{
+    public int SelectedAnimalIndex;
+}
+
+[System.Serializable]
+public class ProductionTotalSaveData
+{
+    public string ItemName;
+    public int Quantity;
+}
+
+[System.Serializable]
+public class AnimalProductionSaveData
+{
+    public List<ProductionTotalSaveData> ProductionTotals = new List<ProductionTotalSaveData>();
+}
+
+[System.Serializable]
+public class NPCMovementSaveData
+{
+    public string NPCId;
+    public float PositionX;
+    public float PositionY;
+    public float PositionZ;
+    public float LocalScaleX;
+    public int CurrentScheduleHour;
+}
+
+[System.Serializable]
+public class NPCScheduleManagerSaveData
+{
+    public int LastProcessedHour;
+}
+
+[System.Serializable]
+public class NPCDialogueSaveData
+{
+    public string NPCId;
+    public int CurrentRelationship;
+}
+
+[System.Serializable]
+public class MockTimeSaveData
+{
+    public int CurrentHour;
+    public int CurrentDay;
+}
+
 [System.Serializable]
 public class SaveData
 {
@@ -96,4 +157,15 @@ public class SaveData
 
     public List<FarmTileSaveData> FarmTiles = new List<FarmTileSaveData>();
     public List<ResourceNodeSaveData> ResourceNodes = new List<ResourceNodeSaveData>();
+
+
+    public List<AnimalSaveData> Animals = new List<AnimalSaveData>();
+    public AnimalInteractionSaveData AnimalInteraction = new AnimalInteractionSaveData();
+    public AnimalProductionSaveData AnimalProduction = new AnimalProductionSaveData();
+
+    public List<NPCMovementSaveData> NPCMovements = new List<NPCMovementSaveData>();
+    public NPCScheduleManagerSaveData NPCScheduleManager = new NPCScheduleManagerSaveData();
+    public List<NPCDialogueSaveData> NPCDialogues = new List<NPCDialogueSaveData>();
+
+    public MockTimeSaveData MockTime = new MockTimeSaveData();
 }
