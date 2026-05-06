@@ -1,2 +1,22 @@
 fileFormatVersion: 2
 guid: d8a777fd59e719f408bded77f89b6620
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - shopPanel: {fileID: 5760140111336510558, guid: c8cff12c3fde07d4f9371c94578ee1d2, type: 3}
+  - shopSystem: {instanceID: 0}
+  - shopStatusText: {instanceID: 0}
+  - moneyText: {instanceID: 0}
+  - closeButton: {instanceID: 0}
+  - buyTab: {instanceID: 0}
+  - buyItemContainer: {instanceID: 0}
+  - sellTab: {instanceID: 0}
+  - sellItemContainer: {instanceID: 0}
+  - buyTabButton: {instanceID: 0}
+  - sellTabButton: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

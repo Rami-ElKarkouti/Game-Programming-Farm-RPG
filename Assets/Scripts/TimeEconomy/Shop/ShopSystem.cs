@@ -64,13 +64,25 @@ public class ShopSystem : MonoBehaviour
 
         ShopItem item = items[index];
 
+        if (item == null)
+        {
+            Debug.LogWarning("Shop item is null at index: " + index);
+            return false;
+        }
+
         if (item.stock <= 0)
         {
             Debug.Log("Item out of stock: " + item.itemName);
             return false;
         }
 
-        if (MoneySystem.Instance == null || !MoneySystem.Instance.SpendMoney(item.price))
+        if (MoneySystem.Instance == null)
+        {
+            Debug.LogWarning("ShopSystem: MoneySystem is missing.");
+            return false;
+        }
+
+        if (!MoneySystem.Instance.SpendMoney(item.price))
         {
             Debug.Log("Not enough money.");
             return false;
@@ -91,17 +103,50 @@ public class ShopSystem : MonoBehaviour
         }
 
         item.stock--;
+
         GameEventSystem.shopStockChanged.Invoke();
+        GameEventSystem.inventoryChanged.Invoke();
+
         Debug.Log("Bought: " + item.itemName + " | Stock left: " + item.stock);
         return true;
     }
 
     public bool SellItem(string itemName)
     {
-        if (InventoryManagern.Instance == null || MoneySystem.Instance == null)
+        if (InventoryManagern.Instance == null)
+        {
+            Debug.LogWarning("ShopSystem: InventoryManagern is missing.");
             return false;
+        }
 
-        ShopItem item = items.Find(i => i.itemName == itemName);
+        if (MoneySystem.Instance == null)
+        {
+            Debug.LogWarning("ShopSystem: MoneySystem is missing.");
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(itemName))
+        {
+            Debug.LogWarning("ShopSystem: Tried to sell an empty item name.");
+            return false;
+        }
+
+        ShopItem item = items.Find(i =>
+            i != null &&
+            !string.IsNullOrWhiteSpace(i.itemName) &&
+            i.itemName.Trim().ToLower() == itemName.Trim().ToLower());
+
+        if (item == null)
+        {
+            Debug.LogWarning("ShopSystem: No matching shop item found for sell price: " + itemName);
+            return false;
+        }
+
+        if (item.sellPrice <= 0)
+        {
+            Debug.LogWarning("ShopSystem: Sell price is 0 or lower for item: " + itemName);
+            return false;
+        }
 
         if (!InventoryManagern.Instance.RemoveItemByName(itemName, 1))
         {
@@ -109,9 +154,11 @@ public class ShopSystem : MonoBehaviour
             return false;
         }
 
-        int sellPrice = item != null ? item.sellPrice : 0;
-        MoneySystem.Instance.AddMoney(sellPrice);
-        Debug.Log("Sold: " + itemName + " for $" + sellPrice);
+        MoneySystem.Instance.AddMoney(item.sellPrice);
+
+        GameEventSystem.inventoryChanged.Invoke();
+
+        Debug.Log("Sold: " + itemName + " for $" + item.sellPrice);
         return true;
     }
 
@@ -127,7 +174,8 @@ public class ShopSystem : MonoBehaviour
 
     public void LoadStockData(List<int> stockData)
     {
-        if (stockData == null) return;
+        if (stockData == null)
+            return;
 
         for (int i = 0; i < items.Count && i < stockData.Count; i++)
             items[i].stock = stockData[i];
