@@ -969,8 +969,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FarmManagerA
   groundTilemap: {fileID: 4821972217208871875}
   soilTilemap: {fileID: 4821972217208871874}
-  tillledSoilTile: {fileID: 11400000, guid: d93b04470c5ea4afa80e7e60e805cdc9, type: 2}
-  wateredSoilTile: {fileID: 11400000, guid: 9a73742ca6b6845e99df78cbbcd6c0bb, type: 2}
+  tillledSoilTile: {fileID: 11400000, guid: bb6ee039658a14fc4ba71c1d64f9a04f, type: 2}
+  wateredSoilTile: {fileID: 11400000, guid: f0586017050a040b8a32ea1016f28278, type: 2}
 --- !u!1 &98330737
 GameObject:
   m_ObjectHideFlags: 0
@@ -7945,8 +7945,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1259173598}
   m_HandleRect: {fileID: 1259173597}
   m_Direction: 2
-  m_Value: 1.0000005
-  m_Size: 0.7985527
+  m_Value: 0.9999995
+  m_Size: 0.79855263
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -10417,6 +10417,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c3ef84f37f3bb4e3890f97899c9e86c5, type: 2}
   - {fileID: 11400000, guid: f7795591188e74e94ae5a49b22542e7c, type: 2}
   - {fileID: 11400000, guid: 5fd3283c892324c9596c7d4cfd5b93c9, type: 2}
+  - {fileID: 11400000, guid: 05b0c628e325a402ba623fe602015e18, type: 2}
+  - {fileID: 11400000, guid: 90a335de91aaf4c0c97db66d190d532b, type: 2}
+  - {fileID: 11400000, guid: 9a6a8e79ea3bf4fc18458a8c681601f6, type: 2}
+  - {fileID: 11400000, guid: 0bf7fc6cc4bc9434e9355e696a58f407, type: 2}
   starterItems:
   - {fileID: 11400000, guid: b9961c068a6d84d7da2893028787c114, type: 2}
   - {fileID: 11400000, guid: 2c9c5a76d8fcd49cab0afec7892ed94d, type: 2}
@@ -16322,8 +16326,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventoryManager: {fileID: 1268042784}
   itemsToPickup:
-  - {fileID: 11400000, guid: fd4692bb726b64cc3a631f331caf5b76, type: 2}
-  - {fileID: 11400000, guid: 3f5e3c17468b64b4f8e15c5960240782, type: 2}
+  - {fileID: 11400000, guid: 90a335de91aaf4c0c97db66d190d532b, type: 2}
+  - {fileID: 11400000, guid: 0bf7fc6cc4bc9434e9355e696a58f407, type: 2}
 --- !u!1 &1955338905 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3608750975839620227, guid: cad120a1b91f54217b5ed08675644077, type: 3}
