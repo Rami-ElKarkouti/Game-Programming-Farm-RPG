@@ -8290,7 +8290,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1259173598}
   m_HandleRect: {fileID: 1259173597}
   m_Direction: 2
-  m_Value: 1.0000038
+  m_Value: 1.0000033
   m_Size: 0.79855263
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -17873,9 +17873,21 @@ MonoBehaviour:
     price: 15
     sellPrice: 15
     stock: 10
-  - itemName: Pickaxe
+  - itemName: Wheat
     price: 10
-    sellPrice: 10
+    sellPrice: 8
+    stock: 10
+  - itemName: Carrot
+    price: 10
+    sellPrice: 8
+    stock: 10
+  - itemName: wheat seed
+    price: 5
+    sellPrice: 0
+    stock: 10
+  - itemName: ' carrot seed'
+    price: 5
+    sellPrice: 0
     stock: 10
 --- !u!1 &2058253359
 GameObject:
